@@ -3,15 +3,17 @@ using System.Text;
 
 namespace TechJobsConsoleAutograded6
 {
-	public class JobData
-	{
+    public class JobData
+    {
         static List<Dictionary<string, string>> AllJobs = new List<Dictionary<string, string>>();
         static bool IsDataLoaded = false;
 
-        public static List<Dictionary<string, string>> FindAll()
+        public static Dictionary<string, string>[] FindAll()
         {
             LoadData();
-            return AllJobs;
+           Dictionary<string, string>[] AllJobsCopy = new Dictionary<string, string>[AllJobs.Count];
+            AllJobs.CopyTo(AllJobsCopy, 0);
+            return AllJobsCopy;
         }
 
         /*
@@ -34,6 +36,7 @@ namespace TechJobsConsoleAutograded6
                 }
             }
 
+            values.Sort();
             return values;
         }
 
@@ -47,7 +50,20 @@ namespace TechJobsConsoleAutograded6
             // load data, if not already loaded
             LoadData();
 
-            return null;
+            List<Dictionary<string, string>> foundJobs = new();
+
+            foreach (Dictionary<string, string> job in AllJobs)
+            {
+                foreach (KeyValuePair<string, string> pair in job)
+                {
+                    if (pair.Value.ToLower().Contains(value.ToLower()))
+                    {
+                        foundJobs.Add(job);
+                        break;
+                    }
+                }
+            }
+            return foundJobs;
         }
 
         /**
@@ -70,7 +86,7 @@ namespace TechJobsConsoleAutograded6
 
 
                 //TODO: Make search case-insensitive
-                if (aValue.Contains(value))
+                if (aValue.ToLower().Contains(value.ToLower()))
                 {
                     jobs.Add(row);
                 }
